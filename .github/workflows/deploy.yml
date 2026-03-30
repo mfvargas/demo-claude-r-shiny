@@ -15,25 +15,23 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
 
-      - name: Install rsconnect
-        run: |
-          dir.create(Sys.getenv("R_LIBS_USER"), recursive = TRUE, showWarnings = FALSE)
-          install.packages("rsconnect", lib = Sys.getenv("R_LIBS_USER"))
-        shell: Rscript {0}
-
-      - name: Deploy to shinyapps.io
+      - name: Install rsconnect and deploy
         env:
           SHINYAPPS_NAME: ${{ secrets.SHINYAPPS_NAME }}
           SHINYAPPS_TOKEN: ${{ secrets.SHINYAPPS_TOKEN }}
           SHINYAPPS_SECRET: ${{ secrets.SHINYAPPS_SECRET }}
         run: |
-          rsconnect::setAccountInfo(
+          install.packages("rsconnect")
+          library(rsconnect)
+          setAccountInfo(
             name   = Sys.getenv("SHINYAPPS_NAME"),
             token  = Sys.getenv("SHINYAPPS_TOKEN"),
             secret = Sys.getenv("SHINYAPPS_SECRET")
           )
-          rsconnect::deployApp(
+          deployApp(
             appDir       = ".",
             appFiles     = "app.R",
             appName      = "demo-mtcars-explorer",
