@@ -38,6 +38,7 @@ server <- function(input, output) {
       color = factor(.data[[input$color_var]])
     )) +
       geom_point(size = 3) +
+      geom_smooth(method = "lm", se = TRUE, color = "steelblue") +
       labs(
         x = input$x_var,
         y = input$y_var,
