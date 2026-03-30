@@ -3,7 +3,9 @@ name: Deploy to shinyapps.io
 on:
   push:
     branches: [main]
-    paths: [app.R]
+    paths:
+      - app.R
+      - .github/workflows/deploy.yml
 
 jobs:
   deploy:
