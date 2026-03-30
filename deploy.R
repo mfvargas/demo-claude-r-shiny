@@ -16,6 +16,7 @@ rsconnect::setAccountInfo(name = name, token = token, secret = secret)
 
 rsconnect::deployApp(
   appDir       = "/srv/shiny-server",
+  appFiles     = "app.R",
   appName      = "demo-mtcars-explorer",
   appTitle     = "Explorador de mtcars",
   forceUpdate  = TRUE,

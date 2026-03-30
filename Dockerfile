@@ -5,9 +5,9 @@ RUN install2.r --error --skipinstalled \
     DT \
     rsconnect
 
-COPY app.R /srv/shiny-server/app.R
+RUN rm -rf /srv/shiny-server/*
 
-RUN rm -rf /srv/shiny-server/sample-apps /srv/shiny-server/index.html
+COPY app.R /srv/shiny-server/app.R
 
 EXPOSE 3838
 
