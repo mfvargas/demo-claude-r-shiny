@@ -8,3 +8,4 @@ services:
       - ./deploy.R:/home/shiny/deploy.R
     env_file:
       - .env
+    restart: unless-stopped
