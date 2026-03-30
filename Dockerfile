@@ -2,7 +2,8 @@ FROM rocker/shiny:latest
 
 RUN install2.r --error --skipinstalled \
     ggplot2 \
-    DT
+    DT \
+    rsconnect
 
 COPY app.R /srv/shiny-server/app.R
 

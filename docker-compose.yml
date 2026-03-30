@@ -5,3 +5,6 @@ services:
       - "3838:3838"
     volumes:
       - ./app.R:/srv/shiny-server/app.R
+      - ./deploy.R:/home/shiny/deploy.R
+    env_file:
+      - .env
