@@ -19,6 +19,21 @@ ui <- fluidPage(
       selectInput("color_var", "Variable de color:",
         choices = names(mtcars),
         selected = "cyl"
+      ),
+      hr(),
+      h4("Variables"),
+      tags$dl(
+        tags$dt("mpg"), tags$dd("Millas por galon"),
+        tags$dt("cyl"), tags$dd("Numero de cilindros"),
+        tags$dt("disp"), tags$dd("Desplazamiento del motor (cu.in.)"),
+        tags$dt("hp"), tags$dd("Caballos de fuerza"),
+        tags$dt("drat"), tags$dd("Relacion del eje trasero"),
+        tags$dt("wt"), tags$dd("Peso (miles de libras)"),
+        tags$dt("qsec"), tags$dd("Tiempo en 1/4 de milla (seg)"),
+        tags$dt("vs"), tags$dd("Motor: 0 = V, 1 = recto"),
+        tags$dt("am"), tags$dd("Transmision: 0 = auto, 1 = manual"),
+        tags$dt("gear"), tags$dd("Numero de marchas"),
+        tags$dt("carb"), tags$dd("Numero de carburadores")
       )
     ),
 
