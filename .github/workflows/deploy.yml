@@ -24,7 +24,7 @@ jobs:
           SHINYAPPS_TOKEN: ${{ secrets.SHINYAPPS_TOKEN }}
           SHINYAPPS_SECRET: ${{ secrets.SHINYAPPS_SECRET }}
         run: |
-          install.packages("rsconnect")
+          install.packages(c("rsconnect", "shiny", "ggplot2", "DT"))
           library(rsconnect)
           setAccountInfo(
             name   = Sys.getenv("SHINYAPPS_NAME"),
