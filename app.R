@@ -4,6 +4,7 @@ library(DT)
 
 ui <- fluidPage(
   titlePanel("Explorador de mtcars"),
+  p("Visualizacion interactiva del dataset Motor Trend Car Road Tests (1974)"),
 
   sidebarLayout(
     sidebarPanel(
