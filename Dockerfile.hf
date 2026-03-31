@@ -1,0 +1,19 @@
+FROM rocker/shiny:4.5.3
+
+RUN install2.r --error --skipinstalled \
+    ggplot2 \
+    DT
+
+RUN rm -rf /srv/shiny-server/*
+
+COPY app.R /srv/shiny-server/app.R
+
+# HF Spaces requires port 7860
+RUN sed -i 's/3838/7860/g' /etc/shiny-server/shiny-server.conf
+
+EXPOSE 7860
+
+# HF Spaces requires user with ID 1000
+USER shiny
+
+CMD ["/usr/bin/shiny-server"]

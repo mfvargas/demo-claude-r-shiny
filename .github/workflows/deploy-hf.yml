@@ -1,0 +1,56 @@
+name: Deploy to Hugging Face Spaces
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - app.R
+      - Dockerfile.hf
+      - .github/workflows/deploy-hf.yml
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Push to Hugging Face Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          # Prepare a temp directory with only the files HF Spaces needs
+          mkdir -p /tmp/hf-space
+
+          # Copy app
+          cp app.R /tmp/hf-space/
+
+          # Dockerfile.hf becomes Dockerfile in the Space
+          cp Dockerfile.hf /tmp/hf-space/Dockerfile
+
+          # Create HF Spaces README with YAML frontmatter
+          cat > /tmp/hf-space/README.md << 'HEREDOC'
+          ---
+          title: Explorador de mtcars
+          emoji: 🚗
+          colorFrom: blue
+          colorTo: green
+          sdk: docker
+          app_port: 7860
+          pinned: false
+          ---
+
+          Aplicacion R Shiny interactiva para explorar el dataset mtcars.
+          HEREDOC
+
+          # Remove leading whitespace from heredoc
+          sed -i 's/^          //' /tmp/hf-space/README.md
+
+          # Push to HF Spaces
+          cd /tmp/hf-space
+          git init
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Deploy from GitHub: ${{ github.sha }}"
+          git push --force https://mfvargas:${HF_TOKEN}@huggingface.co/spaces/mfvargas/demo-mtcars-explorer main

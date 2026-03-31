@@ -15,10 +15,16 @@ Abrir <http://localhost:3838> en el navegador.
 1. Copiar `.env.example` a `.env` y llenar las credenciales de <https://www.shinyapps.io/admin/#/tokens>
 2. `make deploy`
 
+## Despliegue a Hugging Face Spaces
+
+Automatico via GitHub Actions al hacer push a main.
+URL: <https://huggingface.co/spaces/mfvargas/demo-mtcars-explorer>
+
 ## Estructura
 
 - `app.R` — Aplicacion Shiny (UI + Server)
-- `Dockerfile` — Imagen basada en `rocker/shiny` con ggplot2, DT, rsconnect
+- `Dockerfile` — Imagen Docker para desarrollo local
+- `Dockerfile.hf` — Imagen Docker para Hugging Face Spaces (puerto 7860)
 - `docker-compose.yml` — Orquestacion con volumen para desarrollo en vivo
 - `deploy.R` — Script de despliegue a shinyapps.io
 - `.env` — Credenciales de shinyapps.io (NO se commitea)
@@ -37,4 +43,4 @@ Abrir <http://localhost:3838> en el navegador.
 1. Editar `app.R` en VS Code con Claude Code
 2. Recargar navegador en localhost:3838 para ver cambios
 3. `git commit` y `git push`
-4. `make deploy` para publicar en shinyapps.io
+4. GitHub Actions despliega automaticamente a shinyapps.io y Hugging Face Spaces
