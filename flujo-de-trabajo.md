@@ -12,6 +12,7 @@ Esta guia describe el flujo de trabajo completo para desarrollar y desplegar la 
 | **VS Code** | Editor de codigo | [code.visualstudio.com](https://code.visualstudio.com/) |
 | **Claude Code** | Asistente de desarrollo con IA | Extension de VS Code |
 | **Cuenta shinyapps.io** | Hosting de la app en produccion | [shinyapps.io](https://www.shinyapps.io/) |
+| **Cuenta Hugging Face** | Hosting alternativo gratuito | [huggingface.co](https://huggingface.co/) |
 
 > **Nota:** R no se instala localmente. Todo se ejecuta dentro del contenedor Docker.
 
@@ -147,6 +148,7 @@ make rebuild
 |---|---|
 | `app.R` | `.env` (credenciales) |
 | `Dockerfile` | `.Renviron` |
+| `Dockerfile.hf` | |
 | `docker-compose.yml` | `rsconnect/` (metadata local) |
 | `deploy.R` | `.Rproj.user/` |
 | `Makefile` | `.Rhistory`, `.RData` |
@@ -177,37 +179,40 @@ git push
 
 ## 6. Despliegue a produccion
 
-### Comando de despliegue
+La app se despliega automaticamente a **dos plataformas** al hacer push a `main` con cambios en `app.R`, via GitHub Actions.
+
+### Plataformas
+
+| Plataforma | URL | Despliegue |
+|---|---|---|
+| **shinyapps.io** | <https://mfvargas.shinyapps.io/demo-mtcars-explorer/> | Automatico (GitHub Actions) o manual (`make deploy`) |
+| **Hugging Face Spaces** | <https://huggingface.co/spaces/mfvargas/demo-mtcars-explorer> | Automatico (GitHub Actions) |
+
+### Despliegue automatico
+
+Al hacer `git push` a `main` con cambios en `app.R`:
+
+1. **GitHub Actions** se activa automaticamente
+2. El workflow `deploy.yml` despliega a shinyapps.io (instala R + rsconnect y ejecuta `deployApp()`)
+3. El workflow `deploy-hf.yml` despliega a HF Spaces (push de `app.R` + `Dockerfile.hf` al repo del Space)
+
+### Despliegue manual (shinyapps.io)
 
 ```bash
 make deploy
 ```
 
-### Que hace internamente
+Esto ejecuta `deploy.R` dentro del contenedor Docker, que usa `rsconnect::deployApp()`.
 
-`make deploy` ejecuta:
+### Diferencias entre plataformas
 
-```bash
-docker compose exec shiny-app Rscript /home/shiny/deploy.R
-```
-
-Esto corre `deploy.R` dentro del contenedor, que:
-
-1. Lee las credenciales de las variables de entorno (`SHINYAPPS_NAME`, `SHINYAPPS_TOKEN`, `SHINYAPPS_SECRET`)
-2. Registra la cuenta con `rsconnect::setAccountInfo()`
-3. Empaqueta `app.R` y lo sube a shinyapps.io
-4. shinyapps.io instala las dependencias R automaticamente desde CRAN
-5. La app se inicia en produccion
-
-### Verificar el despliegue
-
-Despues de que `make deploy` termine exitosamente, visitar:
-
-**<https://mfvargas.shinyapps.io/demo-mtcars-explorer/>**
-
-### Nota importante
-
-shinyapps.io **no usa Docker**. Ejecuta R de forma nativa e instala los paquetes desde CRAN. El Dockerfile es exclusivamente para el ambiente de desarrollo local.
+| Aspecto | shinyapps.io | HF Spaces |
+|---|---|---|
+| Usa Docker | No (R nativo) | Si (`Dockerfile.hf`) |
+| Puerto | N/A | 7860 |
+| RAM gratuita | 1 GB | 16 GB |
+| Limite de horas | 25 h/mes | Sin limite |
+| Apps gratuitas | 5 | Sin limite |
 
 ## 7. Flujo completo
 
@@ -223,16 +228,23 @@ shinyapps.io **no usa Docker**. Ejecuta R de forma nativa e instala los paquetes
                               |
                     +---------+---------+
                     |                   |
-               +----v----+       +-----v------+
-               |   git   |       |   make     |
-               |  commit |       |  deploy    |
-               |  + push |       +-----+------+
-               +----+----+             |
-                    |                  |
-               +----v----+       +----v---------+
-               | GitHub  |       | shinyapps.io |
-               | (repo)  |       | (produccion) |
-               +---------+       +--------------+
+               +----v----+
+               |   git   |
+               |  commit |
+               |  + push |
+               +----+----+
+                    |
+               +----v----+
+               | GitHub  |
+               | Actions |
+               +----+----+
+                    |
+            +-------+-------+
+            |               |
+     +------v------+ +-----v---------+
+     |shinyapps.io | | HF Spaces     |
+     |(produccion) | | (produccion)  |
+     +-------------+ +---------------+
 ```
 
 ### Resumen del ciclo
@@ -243,8 +255,8 @@ shinyapps.io **no usa Docker**. Ejecuta R de forma nativa e instala los paquetes
 | 2 | Probar localmente | Recargar <http://localhost:3838> |
 | 3 | Guardar en Git | `git add app.R && git commit -m "mensaje"` |
 | 4 | Subir a GitHub | `git push` |
-| 5 | Desplegar | `make deploy` |
-| 6 | Verificar produccion | Visitar la URL de shinyapps.io |
+| 5 | Despliegue automatico | GitHub Actions despliega a shinyapps.io y HF Spaces |
+| 6 | Verificar produccion | Visitar las URLs de produccion |
 
 ## 8. Comandos de referencia rapida
 

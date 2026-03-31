@@ -1,10 +1,13 @@
 # Explorador de mtcars
 
 [![Deploy to shinyapps.io](https://github.com/mfvargas/demo-claude-r-shiny/actions/workflows/deploy.yml/badge.svg)](https://github.com/mfvargas/demo-claude-r-shiny/actions/workflows/deploy.yml)
+[![Deploy to HF Spaces](https://github.com/mfvargas/demo-claude-r-shiny/actions/workflows/deploy-hf.yml/badge.svg)](https://github.com/mfvargas/demo-claude-r-shiny/actions/workflows/deploy-hf.yml)
 
 Aplicacion R Shiny interactiva para explorar el dataset `mtcars`. Permite seleccionar variables para los ejes X/Y y el color de un grafico de dispersion, junto con una tabla interactiva de datos.
 
-**App en produccion:** <https://mfvargas.shinyapps.io/demo-mtcars-explorer/>
+**App en produccion:**
+- shinyapps.io: <https://mfvargas.shinyapps.io/demo-mtcars-explorer/>
+- Hugging Face Spaces: <https://huggingface.co/spaces/mfvargas/demo-mtcars-explorer>
 
 ## Setup rapido
 
@@ -36,7 +39,7 @@ Abrir <http://localhost:3838> en el navegador.
 - **R** + Shiny, ggplot2, DT
 - **Docker** para ambiente de desarrollo
 - **GitHub Actions** para despliegue automatico
-- **shinyapps.io** para produccion
+- **shinyapps.io** y **Hugging Face Spaces** para produccion
 
 ## Documentacion
 
